@@ -15,12 +15,14 @@ func CreatePlayer(u, p string) *types.Player {
 	return &newPlayer
 }
 
-// CreateGame - takes in an id and returns a game with a a blank non nil array of players
+// CreateGame - takes in an id and returns a game with a blank non nil array of players
 func CreateGame(i int) *types.Game {
 
 	newGame := types.Game{}
 
 	newGame.Id = i
+	// Make array with 0 memory allocation
+	newGame.Players = []*types.Player{}
 
 	return &newGame
 }
@@ -31,7 +33,7 @@ func AddPlayerToGame(newPlayer *types.Player, newGame *types.Game) *types.Game {
 	newGameWithPlayer := types.Game{}
 
 	newGameWithPlayer.Id = newGame.Id
-	newGameWithPlayer.Player = newPlayer
+	newGameWithPlayer.Players = append(newGameWithPlayer.Players, newPlayer)
 
 	return &newGameWithPlayer
 }

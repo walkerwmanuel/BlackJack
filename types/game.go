@@ -1,6 +1,6 @@
 package types
 
 type Game struct {
-	Id     int
-	Player *Player
+	Id      int
+	Players []*Player
 }

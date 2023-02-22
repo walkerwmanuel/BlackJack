@@ -40,7 +40,9 @@ func main() {
 		fmt.Println("Error trynna do that json")
 	}
 
-	fmt.Printf("Game with player added to it: %v", z1)
+	z2 := string(z1[:])
+
+	fmt.Printf("Game with player added to it: %v", z2)
 
 }
 
