@@ -6,9 +6,17 @@ import (
 	"fmt"
 	"os"
 	"walkerwmanuel/blackjack/create"
+	"walkerwmanuel/blackjack/data"
 )
 
 func main() {
+	//Calls to connect to database
+	err := data.ConnectDatabase()
+	if err != nil {
+		fmt.Println("Error connecting to database")
+		os.Exit(1)
+	}
+
 	//Ask for user input on username
 	fmt.Print("Enter username: ")
 	input := bufio.NewReader(os.Stdin)

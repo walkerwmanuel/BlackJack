@@ -1,6 +1,8 @@
 package create
 
 import (
+	"fmt"
+	"walkerwmanuel/blackjack/data"
 	"walkerwmanuel/blackjack/types"
 )
 
@@ -11,6 +13,11 @@ func CreatePlayer(u, p string) *types.Player {
 
 	newPlayer.Username = u
 	newPlayer.Password = p
+
+	_, err := data.InsertPlayerToDB(&newPlayer)
+	if err != nil {
+		fmt.Printf("Error interting into database: %v /n", err)
+	}
 
 	return &newPlayer
 }
