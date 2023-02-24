@@ -1,11 +1,16 @@
 package data
 
+//Doing stuff in DB is sql querry
+
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"walkerwmanuel/blackjack/types"
+
+	_ "github.com/mattn/go-sqlite3"
 )
+
+// const dbFilename = "data.db"
 
 func ConnectDatabase() error {
 	db, err := sql.Open("sqlite3", "./data/data.db")
@@ -19,19 +24,13 @@ func ConnectDatabase() error {
 
 var DB *sql.DB
 
-// InsertPlayerToDB - Creates table players and inserts player to DB
+// InsertPlayerToDB - Inserts player to DB
 func InsertPlayerToDB(newPlayer *types.Player) (bool, error) {
-
+	// ERROR HERE
 	tx, err := DB.Begin()
 	if err != nil {
 		return false, err
 	}
-
-	_, err = DB.Exec("CREATE TABLE `players` (`username` INTEGER PRIMARY KEY AUTOINCREMENT, `password` VARCHAR(64) NULL)")
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	stmt, err := tx.Prepare("INSERT INTO players (username, password) VALUES (?, ?)")
 
 	if err != nil {
