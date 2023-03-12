@@ -23,11 +23,11 @@ func CreatePlayer(u, p string) *types.Player {
 }
 
 // CreateGame - takes in an id and returns a game with a blank non nil array of players
-func CreateGame(i int) *types.Game {
+func CreateGame(n int) *types.Game {
 
 	newGame := types.Game{}
 
-	newGame.Id = i
+	newGame.Id = n
 	// Make array with 0 memory allocation
 	newGame.Players = []*types.Player{}
 
