@@ -4,6 +4,7 @@ package data
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"walkerwmanuel/blackjack/types"
 
@@ -12,6 +13,7 @@ import (
 
 // const dbFilename = "data.db"
 
+// ConnectDatabase - Begins DB operations and creates data.db inside data directory if not there
 func ConnectDatabase() error {
 	db, err := sql.Open("sqlite3", "./data/data.db")
 	if err != nil {
@@ -44,7 +46,7 @@ func CreateTableGames() error {
 func CreateTablePlayers() error {
 	tableName := "Players"
 
-	statement, err := DB.Prepare("CREATE TABLE IF NOT EXISTS " + tableName + " (username INT, password TEXT, PRIMARY KEY(username))")
+	statement, err := DB.Prepare("CREATE TABLE IF NOT EXISTS " + tableName + " (username TEXT, password TEXT, PRIMARY KEY(username))")
 	if err != nil {
 		return err
 	}
@@ -100,7 +102,9 @@ func InsertGameToDB(newGame *types.Game) (bool, error) {
 
 	defer stmt.Close()
 
-	_, err = stmt.Exec(newGame.Id, newGame.Players)
+	jsonPlayer, _ := json.Marshal(newGame.Players)
+
+	_, err = stmt.Exec(newGame.Id, jsonPlayer)
 
 	if err != nil {
 		fmt.Println("Error2!")

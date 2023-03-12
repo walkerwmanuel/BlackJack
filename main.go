@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"walkerwmanuel/blackjack/create"
 	"walkerwmanuel/blackjack/data"
 	"walkerwmanuel/blackjack/userInput"
@@ -35,7 +36,16 @@ func main() {
 
 	fmt.Printf("Created Player: %v ", x)
 
-	y := create.CreateGame(4)
+	gameId := userInput.GetUIForGameId()
+
+	//Converts input from byte to int
+	gameIdInt, err := strconv.Atoi(string(gameId))
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	//Creates game based on input
+	y := create.CreateGame(gameIdInt)
 
 	z := create.AddPlayerToGame(x, y)
 
@@ -52,4 +62,6 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	fmt.Println("Your game hass been added to the database")
 }

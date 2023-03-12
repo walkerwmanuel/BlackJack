@@ -27,3 +27,14 @@ func GetUIForPassword() string {
 	}
 	return password
 }
+
+// GetUIForGameId - Ask for user input of a GameId and stores it into a byte
+func GetUIForGameId() byte {
+	fmt.Print("Select GameID (Must be an integer): ")
+	input := bufio.NewReader(os.Stdin)
+	gameID, err := input.ReadByte()
+	if err != nil {
+		fmt.Println("An error occured while reading input. Please try again", err)
+	}
+	return gameID
+}
