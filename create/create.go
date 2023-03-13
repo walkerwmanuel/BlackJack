@@ -13,6 +13,7 @@ func CreatePlayer(u, p string) *types.Player {
 
 	newPlayer.Username = u
 	newPlayer.Password = p
+	newPlayer.Money = 100
 
 	_, err := data.InsertPlayerToDB(&newPlayer)
 	if err != nil {
