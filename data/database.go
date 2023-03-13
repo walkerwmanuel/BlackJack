@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"walkerwmanuel/blackjack/types"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -46,7 +47,7 @@ func CreateTableGames() error {
 func CreateTablePlayers() error {
 	tableName := "Players"
 
-	statement, err := DB.Prepare("CREATE TABLE IF NOT EXISTS " + tableName + " (username TEXT, password TEXT, PRIMARY KEY(username))")
+	statement, err := DB.Prepare("CREATE TABLE IF NOT EXISTS " + tableName + " (username TEXT, password TEXT, money INT, PRIMARY KEY(username))")
 	if err != nil {
 		return err
 	}
@@ -65,7 +66,7 @@ func InsertPlayerToDB(newPlayer *types.Player) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	stmt, err := tx.Prepare("INSERT or REPLACE INTO players (username, password) VALUES (?, ?)")
+	stmt, err := tx.Prepare("INSERT or REPLACE INTO players (username, password, money) VALUES (?, ?, ?)")
 
 	if err != nil {
 		fmt.Println("Error!")
@@ -74,7 +75,7 @@ func InsertPlayerToDB(newPlayer *types.Player) (bool, error) {
 
 	defer stmt.Close()
 
-	_, err = stmt.Exec(newPlayer.Username, newPlayer.Password)
+	_, err = stmt.Exec(newPlayer.Username, newPlayer.Password, newPlayer.Money)
 
 	if err != nil {
 		fmt.Println("Error2!")
@@ -113,5 +114,59 @@ func InsertGameToDB(newGame *types.Game) (bool, error) {
 
 	tx.Commit()
 
+	return true, nil
+}
+
+// GetPlayerByUsername - Gets a player from db from username and stores it in a pointer to slice of type player
+func GetPlayerByUsername(username string) (*types.Player, error) {
+
+	rows, err := DB.Query("SELECT * FROM players WHERE username like '%" + username + "%'")
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for rows.Next() {
+		ourPlayer := types.Player{}
+		err = rows.Scan(&ourPlayer.Username, &ourPlayer.Password, &ourPlayer.Money)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return &ourPlayer, err
+	}
+
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil, err
+}
+
+// UpdatePlayer - Updates player at their username
+func UpdatePlayer(player *types.Player) (bool, error) {
+
+	tx, err := DB.Begin()
+	if err != nil {
+		return false, err
+	}
+
+	stmt, err := tx.Prepare("UPDATE players SET password = ?, money = ? WHERE Username = ?")
+
+	if err != nil {
+		return false, err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(player.Password, player.Money, player.Username)
+
+	if err != nil {
+		return false, err
+	}
+
+	tx.Commit()
 	return true, nil
 }

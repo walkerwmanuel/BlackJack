@@ -63,5 +63,5 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println("Your game hass been added to the database")
+	fmt.Println("\n Your game has been added to the database!")
 }
