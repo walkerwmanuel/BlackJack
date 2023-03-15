@@ -1,4 +1,4 @@
-package create
+package logic
 
 import (
 	"fmt"
@@ -29,6 +29,7 @@ func CreateGame(n int) *types.Game {
 	newGame := types.Game{}
 
 	newGame.Id = n
+	newGame.Money = 0
 	// Make array with 0 memory allocation
 	newGame.Players = []*types.Player{}
 
@@ -44,4 +45,32 @@ func AddPlayerToGame(newPlayer *types.Player, newGame *types.Game) *types.Game {
 	newGameWithPlayer.Players = append(newGameWithPlayer.Players, newPlayer)
 
 	return &newGameWithPlayer
+}
+
+func AddMoneyToPlayer(username string, n int) error {
+	ourPlayer, err := data.GetPlayerByUsername(username)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	ourPlayer.Money += n
+
+	data.UpdatePlayer(ourPlayer)
+
+	return err
+
+}
+
+func AddMoneyToGame(Id string, n int) error {
+	ourGame, err := data.GetGameById(Id)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	ourGame.Money += n
+
+	data.UpdateGame(ourGame)
+
+	return err
+
 }

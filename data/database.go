@@ -31,7 +31,7 @@ var DB *sql.DB
 func CreateTableGames() error {
 	tableName := "Games"
 
-	statement, err := DB.Prepare("CREATE TABLE IF NOT EXISTS " + tableName + " (id INT, players BLOB, PRIMARY KEY(id))")
+	statement, err := DB.Prepare("CREATE TABLE IF NOT EXISTS " + tableName + " (id INT, players BLOB, money INT, PRIMARY KEY(id))")
 	if err != nil {
 		return err
 	}
@@ -94,7 +94,7 @@ func InsertGameToDB(newGame *types.Game) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	stmt, err := tx.Prepare("INSERT or REPLACE INTO games (id, players) VALUES (?, ?)")
+	stmt, err := tx.Prepare("INSERT or REPLACE INTO games (id, players, money) VALUES (?, ?, ?)")
 
 	if err != nil {
 		fmt.Println("Error!")
@@ -105,7 +105,7 @@ func InsertGameToDB(newGame *types.Game) (bool, error) {
 
 	jsonPlayer, _ := json.Marshal(newGame.Players)
 
-	_, err = stmt.Exec(newGame.Id, jsonPlayer)
+	_, err = stmt.Exec(newGame.Id, jsonPlayer, newGame.Money)
 
 	if err != nil {
 		fmt.Println("Error2!")
@@ -117,7 +117,7 @@ func InsertGameToDB(newGame *types.Game) (bool, error) {
 	return true, nil
 }
 
-// GetPlayerByUsername - Gets a player from db from username and stores it in a pointer to slice of type player
+// GetPlayerByUsername - Gets a player from db from username and stores it in a pointer to type player
 func GetPlayerByUsername(username string) (*types.Player, error) {
 
 	rows, err := DB.Query("SELECT * FROM players WHERE username like '%" + username + "%'")
@@ -169,4 +169,57 @@ func UpdatePlayer(player *types.Player) (bool, error) {
 
 	tx.Commit()
 	return true, nil
+}
+
+// UpdateGame - Updates game at its Id
+func UpdateGame(game *types.Game) (bool, error) {
+
+	tx, err := DB.Begin()
+	if err != nil {
+		return false, err
+	}
+
+	stmt, err := tx.Prepare("UPDATE games SET players = ? money = ? WHERE Id = ?")
+	if err != nil {
+		return false, err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(game.Players, game.Id, game.Money)
+
+	if err != nil {
+		return false, err
+	}
+
+	tx.Commit()
+	return true, nil
+}
+
+// GetGameById - Gets a game from DB and stores it in unique pointer to types.Game
+func GetGameById(username string) (*types.Game, error) {
+
+	rows, err := DB.Query("SELECT * FROM players WHERE username like '%" + username + "%'")
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for rows.Next() {
+		ourGame := types.Game{}
+		err = rows.Scan(&ourGame.Id, &ourGame.Players, &ourGame.Money)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return &ourGame, err
+	}
+
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil, err
 }
