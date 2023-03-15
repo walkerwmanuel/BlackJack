@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"walkerwmanuel/blackjack/create"
 	"walkerwmanuel/blackjack/data"
+	"walkerwmanuel/blackjack/logic"
 	"walkerwmanuel/blackjack/userInput"
 )
 
@@ -32,7 +32,7 @@ func main() {
 	username := userInput.GetUIForUsername()
 	password := userInput.GetUIForPassword()
 
-	x := create.CreatePlayer(username, password)
+	x := logic.CreatePlayer(username, password)
 
 	fmt.Printf("Created Player: %v ", x)
 
@@ -45,9 +45,9 @@ func main() {
 	}
 
 	//Creates game based on input
-	y := create.CreateGame(gameIdInt)
+	y := logic.CreateGame(gameIdInt)
 
-	z := create.AddPlayerToGame(x, y)
+	z := logic.AddPlayerToGame(x, y)
 
 	z1, err := json.Marshal(z)
 	if err != nil {
@@ -63,5 +63,5 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println("\n Your game has been added to the database!")
+	fmt.Println("Your game has been added to the database!")
 }
