@@ -11,6 +11,8 @@ import (
 
 func main() {
 
+	//
+	//
 	// Calls Connect to database
 	err := data.ConnectDatabase()
 	if err != nil {
@@ -19,15 +21,8 @@ func main() {
 	}
 	fmt.Println("Connected to the Database!")
 
-	err = data.CreateTableGames()
-	if err != nil {
-		fmt.Println("error")
-	}
+	_ = data.CreateALlTables()
 
-	err = data.CreateTablePlayers()
-	if err != nil {
-		fmt.Println("error")
-	}
 	//Ask for user input for player struct vales
 	username := userInput.GetUIForUsername()
 	password := userInput.GetUIForPassword()

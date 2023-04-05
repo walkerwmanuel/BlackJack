@@ -223,3 +223,18 @@ func GetGameById(username string) (*types.Game, error) {
 
 	return nil, err
 }
+
+// CreateAllTables - Spins up all needed tables for data file
+func CreateALlTables() error {
+	err := CreateTableGames()
+	if err != nil {
+		fmt.Println("error")
+	}
+
+	err = CreateTablePlayers()
+	if err != nil {
+		fmt.Println("error")
+	}
+
+	return err
+}
